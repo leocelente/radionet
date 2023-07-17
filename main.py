@@ -73,7 +73,7 @@ def on_serial_data(cmd_type, data: bytes) -> None:
         tunnel.tun.write(data)
     else:
         # Deal with incoming RAW packets or CMD_CONF
-        console.print(f"[bright_magenta]\[{timestamp}]({size}) Raw <{packet.chksum},{cmd_type}>\n{hexdump(data, True)}\n")
+        console.print(f"[bright_magenta]\[{timestamp}]({size}) Raw <{cmd_type}>\n{hexdump(data, True)}\n")
         pass
         
 
