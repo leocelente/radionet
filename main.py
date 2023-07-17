@@ -35,7 +35,7 @@ def check_chksum(packet: IP) -> bool:
 
 def is_valid_ip_packet(packet) -> bool:
     # Use checksum to differentiate RAW socket data from normal IP packets
-    return packet.chksum is not None and check_chksum(packet)
+    return hasattr(packet, 'chksum') and (packet.chksum is not None) and check_chksum(packet)
 
 def is_multicast(packet: IP) -> bool:
     start = int(packet.dst.split('.')[0])
