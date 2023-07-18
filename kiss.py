@@ -54,17 +54,18 @@ class KISS():
 
     @staticmethod
     def transform(cmd: int, raw: bytes) -> bytes:
-        transformed: list[int] = [int.from_bytes(FEND, byteorder='big'), cmd]        
+        B = lambda b: int.from_bytes(b, byteorder='big')
+        transformed: list[int] = [B(FEND), cmd]        
         for b in raw:
             b = int(b)
-            if (b == FEND):
-                transformed.append(int.from_bytes(FESC, byteorder='big'))
-                transformed.append(int.from_bytes(TFEND, byteorder='big'))
+            if b == B(FEND):
+                transformed.append(B(FESC))
+                transformed.append(B(TFEND))
                 continue
-            elif (b == FESC):
-                transformed.append(int.from_bytes(FESC, byteorder='big'))
-                transformed.append(int.from_bytes(TFESC, byteorder='big'))
+            elif b == B(FESC):
+                transformed.append(B(FESC))
+                transformed.append(B(TFESC))
                 continue
             transformed.append(b)
-        transformed.append(int.from_bytes(FEND, byteorder='big'))
+        transformed.append(B(FEND))
         return bytes(transformed)
