@@ -1,0 +1,7 @@
+markdown-it-py==3.0.0
+mdurl==0.1.2
+Pygments==2.15.1
+pyserial==3.5
+python-pytun==2.4.1
+rich==13.4.2
+scapy==2.5.0
