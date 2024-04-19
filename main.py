@@ -52,10 +52,12 @@ def on_ip_data(data: bytes) -> None:
             console.print(f"[red]\[{timestamp}]({size}) {packet.summary()}")
             return
 
-        console.print(f"[green]\[{timestamp}]({size}) {packet.summary()}\n{hexdump(packet, True)}\n ")    
+        console.print(f"[green]\[{timestamp}]({size}) {packet.summary()}")
+        console.print(f"{hexdump(packet, True)}\n")    
     else:
         packet = Raw(data)
-        console.print(f"[blue]\[{timestamp}]({size}) {packet.summary()}\n{hexdump(packet, True)}\n")
+        console.print(f"[blue]\[{timestamp}]({size}) {packet.summary()}")
+        console.print(f"{hexdump(packet, True)}\n")
 
     tunnel.serial.write(KISS.transform(CMD_DATA, data))
     
@@ -69,11 +71,13 @@ def on_serial_data(cmd_type, data: bytes) -> None:
         packet = Raw(data)
     timestamp = datetime.now().strftime("%Hh%Mm%Ss")
     if is_valid_ip_packet(packet) and int.from_bytes(cmd_type, byteorder='big') == CMD_DATA:
-        console.print(f"[bright_cyan]\[{timestamp}]({size}) {packet.summary()}\n{hexdump(packet, True)}\n ")
+        console.print(f"[bright_cyan]\[{timestamp}]({size}) {packet.summary()}")
+        console.print(f"{hexdump(packet, True)}\n ")
         tunnel.tun.write(data)
     else:
         # Deal with incoming RAW packets or CMD_CONF
-        console.print(f"[bright_magenta]\[{timestamp}]({size}) Raw <{cmd_type}>\n{hexdump(data, True)}\n")
+        console.print(f"[bright_magenta]\[{timestamp}]({size}) Raw <{cmd_type}>")
+        console.print(f"{hexdump(data, True)}\n")
         pass
         
 
