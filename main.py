@@ -82,7 +82,7 @@ def on_serial_data(cmd_type, data: bytes) -> None:
         
 
 kiss = KISS(callback=on_serial_data)
-
+print("Radionet Started!")
 try:
     while True:
         readers, _, _ = select([tunnel.tun, tunnel.serial], [], [])
