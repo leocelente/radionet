@@ -26,6 +26,7 @@ tunnel = SerialTunnel(
 )
 
 console = Console()
+console_print = console.print
 
 def check_chksum(packet: IP) -> bool:
     original_checksum = packet.chksum
@@ -49,15 +50,15 @@ def on_ip_data(data: bytes) -> None:
     if is_valid_ip_packet(packet):
         # In theory we disable multicast to this interface, but they seem to come in anyway
         if is_multicast(packet): 
-            console.print(f"[red]\[{timestamp}]({size}) {packet.summary()}")
+            console_print(f"[red]\[{timestamp}]({size}) {packet.summary()}")
             return
 
-        console.print(f"[green]\[{timestamp}]({size}) {packet.summary()}")
-        console.print(f"{hexdump(packet, True)}\n")    
+        console_print(f"[green]\[{timestamp}]({size}) {packet.summary()}")
+        console_print(f"{hexdump(packet, True)}\n")    
     else:
         packet = Raw(data)
-        console.print(f"[blue]\[{timestamp}]({size}) {packet.summary()}")
-        console.print(f"{hexdump(packet, True)}\n")
+        console_print(f"[blue]\[{timestamp}]({size}) {packet.summary()}")
+        console_print(f"{hexdump(packet, True)}\n")
 
     tunnel.serial.write(KISS.transform(CMD_DATA, data))
     
@@ -67,17 +68,17 @@ def on_serial_data(cmd_type, data: bytes) -> None:
     try:
         packet = IP(data)
     except TypeError:
-        console.print(data)
+        console_print(data)
         packet = Raw(data)
     timestamp = datetime.now().strftime("%Hh%Mm%Ss")
     if is_valid_ip_packet(packet) and int.from_bytes(cmd_type, byteorder='big') == CMD_DATA:
-        console.print(f"[bright_cyan]\[{timestamp}]({size}) {packet.summary()}")
-        console.print(f"{hexdump(packet, True)}\n ")
+        console_print(f"[bright_cyan]\[{timestamp}]({size}) {packet.summary()}")
+        console_print(f"{hexdump(packet, True)}\n ")
         tunnel.tun.write(data)
     else:
         # Deal with incoming RAW packets or CMD_CONF
-        console.print(f"[bright_magenta]\[{timestamp}]({size}) Raw <{cmd_type}>")
-        console.print(f"{hexdump(data, True)}\n")
+        console_print(f"[bright_magenta]\[{timestamp}]({size}) Raw <{cmd_type}>")
+        console_print(f"{hexdump(data, True)}\n")
         pass
         
 
